@@ -3,7 +3,9 @@
 import csv, datetime
 import signal_processing as sp
 from random import random
-from housepy import util, drawing
+from housepy import util, drawing, strings
+from collections import OrderedDict
+from colors import colors
 
 # START = "1973-01-01"
 # START = "2015-01-01"
@@ -15,13 +17,14 @@ NORMALIZE = True
 TAIL = 172800 # 2 days
 
 species_list = []
-species_list = ['Taraxacum officinale', 'Collomia linearis', 'Hydrophyllum fendleri']
+# species_list = ['Taraxacum officinale', 'Collomia linearis', 'Hydrophyllum fendleri']
+species_list = ['Festuca thurberi', 'Elymus glaucus', 'Salix sp.', 'Stellaria longifolia', 'Erigeron coulteri', 'Hydrophyllum capitatum', 'Ranunculus inamoenus', 'Epilobium brachycarpum', 'Erigeron elatior', 'Oxypolis fendleri']
 # species_list = ['Collomia linearis']
 # species_list = ['Carex nigricans']
 
 
 # load data into t and count arrays per species
-species = {}
+species = OrderedDict()
 start_t = util.timestamp(util.parse_date(START))
 end_t = util.timestamp(util.parse_date(END))
 max_count = 0
@@ -45,6 +48,7 @@ with open("data.csv") as f:
             species[name] = {'ts': [start_t, t - 1], 'counts': [0, 0]}
         species[name]['ts'].append(t)
         species[name]['counts'].append(count)
+species = OrderedDict(sorted(species.items()))
 print("--> loaded")
 
 
@@ -74,7 +78,7 @@ ctx = drawing.Context(1500, 500)
 i = 0
 for name, s in species.items():
     print("Drawing %s..." % name)
-    color = random(), random(), random(), 1.
+    color = colors[i]
     signal = sp.resample(s['ts'], s['counts'])
     if NORMALIZE:
         signal = sp.normalize(signal)
@@ -84,6 +88,7 @@ for name, s in species.items():
     ctx.plot(signal, stroke=color, thickness=2)
     ctx.line(10 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), 30 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), stroke=color, thickness=2)
     # ctx.label(0.5, 0.5, "test")
+    ctx.label(35 / ctx.width, 1 - ((13 + (i * 10)) / ctx.height), name.upper(), size=10)    
     i += 1
 
 ctx.output("charts")
