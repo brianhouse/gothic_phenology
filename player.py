@@ -3,7 +3,7 @@
 from main import signals
 from braid import *
 
-core.log_midi = False
+core.log_midi = True
 tempo(204)
 
 def b(n):
@@ -18,7 +18,7 @@ def p(n):
         return n
     return f
 
-signals = signals[:5]
+signals = signals[0:5]
 
 # one cycle is half a month
 
@@ -34,23 +34,37 @@ days = Voice(10, rate=1, chord=None)    # more like half a week
 days.set([b(54), p(54), b(54), p(54)] * 2)
 # days.mute(True)
 
+# def check(n):
+#     def f(v):
+#         return n
+#         if v.volume() > 0 and v.playing() == 0:
+#             v.playing(1)
+#             print('START', v.volume())
+#             return n
+#         elif v.volume() == 0 and v.playing() == 1:
+#             v.playing(0)
+#             print('STOP')
+#             return n
+#         else:
+#             return n
+#     return f
 
-patterns = [    [b(1), p(1), b(1), p(1)] * 2,
-                [b(2), b(2), p(2), p(2)] * 2,
-                [b(3), [p(3), p(3)], b(3), [p(3), p(3)]] * 2,
-                [b(4), p(4), b(4), p(4)] * 2,
-                [b(5), b(5), 0, p(5)] * 2,  
-                ]
-
+channels = [2, 3, 4, 5, 6, 7]     # why does the first one not play?
+notes = [1, 2, 3, 4, 5, 6]
 for s, signal in enumerate(signals):
+    if s == len(channels):
+        break
     f = signal_from_timeseries(signal)
     plot(f, color="red")
-    channel = s + 3 if s < 8 else s + 4
-    v = Voice(channel, rate=1, chord=(C, LYD), controls={'volume': 2})
-    v.set(patterns[s % len(patterns)])
-    v.velocity.set(0.0)
-    v.velocity.tween(1.0, 24, f, repeat=True, flip=False)
+    print('channel', channels[s])
+    v = Voice(channels[s], rate=1, chord=(C, LYD), controls={'volume': 7})
+    # v.set(patterns[s % len(patterns)])
+    v.set([s])
+    # v.velocity.set(0.0)
+    # v.velocity.tween(1.0, 24, f, repeat=True, flip=False)
+    v.volume(10)
     v.volume.tween(127, 24, f, repeat=True, flip=False)
+    v.add("playing")
 
     
 show_plots()
