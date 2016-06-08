@@ -8,8 +8,8 @@ from collections import OrderedDict
 from colors import colors
 
 # START = "1973-01-01"
-# START = "2015-01-01"
-START = "2010-01-01"
+START = "2015-01-01"
+# START = "2010-01-01"
 # END = "1973-12-31"
 END = "2015-12-31"
 
@@ -74,22 +74,27 @@ print("--> onsets added")
 
 
 # create and draw signals
-ctx = drawing.Context(1500, 500)
+signals = []
+if __name__ == "__main__":
+    ctx = drawing.Context(1500, 750)
 i = 0
 for name, s in species.items():
     print("Drawing %s..." % name)
-    color = colors[i]
+    color = colors[i % len(colors)]
     signal = sp.resample(s['ts'], s['counts'])
     if NORMALIZE:
         signal = sp.normalize(signal)
     else:
         signal = sp.normalize(signal, 0, max_count)    
     signal = sp.smooth(signal, size=8)
-    ctx.plot(signal, stroke=color, thickness=2)
-    ctx.line(10 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), 30 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), stroke=color, thickness=2)
-    # ctx.label(0.5, 0.5, "test")
-    ctx.label(35 / ctx.width, 1 - ((13 + (i * 10)) / ctx.height), name.upper(), size=10)    
-    i += 1
+    signals.append(signal)
+    if __name__ == "__main__":
+        ctx.plot(signal, stroke=color, thickness=2)
+        ctx.line(10 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), 30 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), stroke=color, thickness=2)
+        # ctx.label(0.5, 0.5, "test")
+        ctx.label(35 / ctx.width, 1 - ((13 + (i * 10)) / ctx.height), name.upper(), size=10)    
+        i += 1
 
-ctx.output("charts")
+if __name__ == "__main__":
+    ctx.output("charts")
 
