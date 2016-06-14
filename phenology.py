@@ -2,14 +2,16 @@
 
 import csv, datetime
 import signal_processing as sp
+import numpy as np
 from random import random
 from housepy import util, drawing, strings
 from collections import OrderedDict
 from colors import colors
 
 # START = "1973-01-01"
-START = "2014-01-01"
-# START = "2010-01-01"
+# START = "2014-01-01"
+START = "2011-01-01"
+# START = "2006-01-01"
 # END = "1973-12-31"
 END = "2015-12-31"
 
@@ -21,7 +23,6 @@ species_list = []
 species_list = ['Festuca thurberi', 'Elymus glaucus', 'Salix sp.', 'Stellaria longifolia', 'Erigeron coulteri', 'Hydrophyllum capitatum', 'Ranunculus inamoenus', 'Epilobium brachycarpum', 'Erigeron elatior', 'Oxypolis fendleri']
 # species_list = ['Collomia linearis']
 # species_list = ['Carex nigricans']
-
 
 # load data into t and count arrays per species
 species = OrderedDict()
@@ -67,7 +68,7 @@ for name in species:
                 ts.insert(i, start_season_t - TAIL)
                 species[name]['counts'].insert(i, 0)
             ts.insert(i, end_season_t + TAIL)
-            species[name]['counts'].insert(i, 0)                            
+            species[name]['counts'].insert(i, 0)
     species[name]['ts'].append(end_t)
     species[name]['counts'].append(0)
 print("--> onsets added")
@@ -80,18 +81,41 @@ if __name__ == "__main__":
 i = 0
 for name, data in species.items():
     print("Drawing %s..." % name)
+
+    # create signal from bloom counts
     signal = sp.resample(data['ts'], data['counts'])
     if NORMALIZE:
         signal = sp.normalize(signal)
     else:
         signal = sp.normalize(signal, 0, max_count)    
     signal = sp.smooth(signal, size=8)
-    signals.append(signal)
+    signal = sp.limit(signal, max(signal))  # get rid of noise below 0 for onset detection
+
+    # add spikes for peaks
+    peaks, valleys = sp.detect_peaks(signal, lookahead=50)
+    peak_signal = np.zeros(len(signal))    
+    for peak in peaks:
+        peak_signal[peak[0]] = 1.0
+    signal += peak_signal
+
+    # add spikes for onsets
+    onsets = sp.detect_onsets(signal)
+    onset_signal = np.zeros(len(signal))    
+    for onset in onsets:
+        onset_signal[onset] = 0.5
+    signal += onset_signal
+
+    # limit
+    signal = sp.limit(signal, 1.0)
+    signals.append(signal)   
+
     if __name__ == "__main__":
-        color = colors[i % len(colors)]
+        color = colors[i % len(colors)]        
         ctx.plot(signal, stroke=color, thickness=2)
         ctx.line(10 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), 30 / ctx.width, 1 - ((10 + (i * 10)) / ctx.height), stroke=color, thickness=2)
         ctx.label(35 / ctx.width, 1 - ((13 + (i * 10)) / ctx.height), name.upper(), size=10)    
+        # for peak in peaks:
+        #     ctx.arc(peak[0] / len(signal), peak[1], 3 / len(signal), thickness=5)        
     i += 1
 
 if __name__ == "__main__":
