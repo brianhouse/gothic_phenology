@@ -1,0 +1,24 @@
+# start: 1973-01-01
+start: 2014-01-01
+# start: 2010-01-01
+# start: 1973-12-31
+end: 2014-12-31
+
+normalize: True
+onset_spikes: True
+peak_spikes: True
+
+tail: 172800 # 2 days
+
+species_list:
+    - Claytonia lanceolata
+    - Mertensia fusiformis
+    - Hydrophyllum capitatum
+    - Erythronium grandiflorum
+    - Delphinium nuttallianum
+    - Adenolinum lewisii
+    - Erigeron flagellaris
+    - Delphinium barbeyi
+    - Dugaldia hoopesii
+    - Erigeron speciosus
+    - Heterotheca villosa
