@@ -18,9 +18,10 @@ TAIL = 172800 # 2 days
 
 species_list = []
 # species_list = ['Taraxacum officinale', 'Collomia linearis', 'Hydrophyllum fendleri']
-species_list = ['Festuca thurberi', 'Elymus glaucus', 'Salix sp.', 'Stellaria longifolia', 'Erigeron coulteri', 'Hydrophyllum capitatum', 'Ranunculus inamoenus', 'Epilobium brachycarpum', 'Erigeron elatior', 'Oxypolis fendleri']
+# species_list = ['Festuca thurberi', 'Elymus glaucus', 'Salix sp.', 'Stellaria longifolia', 'Erigeron coulteri', 'Hydrophyllum capitatum', 'Ranunculus inamoenus', 'Epilobium brachycarpum', 'Erigeron elatior', 'Oxypolis fendleri']
 # species_list = ['Collomia linearis']
 # species_list = ['Carex nigricans']
+species_list = ["Claytonia lanceolata", "Mertensia fusiformis", "Hydrophyllum capitatum", "Erythronium grandiflorum", "Delphinium nuttallianum", "Adenolinum lewisii", "Erigeron flagellaris", "Delphinium barbeyi", "Dugaldia hoopesii", "Erigeron speciosus", "Heterotheca villosa"]
 
 
 # load data into t and count arrays per species

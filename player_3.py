@@ -7,7 +7,7 @@ YEARS = 5
 
 core.log_midi = True
 # tempo(204)
-tempo(50)
+tempo(75)
 
 channels = [1, 2, 3, 4, 5, 6, 7, 8]
 roots =    [G0, G1, G1, G2, G2, G3, G3, G4, G4]
@@ -16,9 +16,7 @@ colors =   ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'brown', 'cyan
 signals.reverse()
 
 for s, signal in enumerate(signals):
-    # if s == len(channels):
-    #     break
-    if s == 5:
+    if s == len(channels):
         break
     v = Voice(channels[s], rate=1, chord=(roots[s], LYD), controls={'volume': 20})
 
@@ -34,6 +32,7 @@ for s, signal in enumerate(signals):
 
     v.play(notes[s])
     v.play_at(5, notes[s])
+    # v.set([notes[s]])
 
 
     
